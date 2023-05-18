@@ -7,6 +7,17 @@ const types = [
     ["Animation", "Document"],
 ];
 
+const actions = {
+    "Photo": "upload_photo",
+    "Sticker": "choose_sticker",
+    "Video": "upload_video",
+    "Audio": "upload_document",
+    "VideoNote": "upload_video_note",
+    "Voice": "upload_voice",
+    "Animation": "upload_document",
+    "Document": "upload_document",
+}
+
 const {TELEGRAM_BOT_TOKEN} = process.env;
 
 export const bot = new Bot(TELEGRAM_BOT_TOKEN);
@@ -27,6 +38,7 @@ const handleCallback = type => ctx => {
     if (!ctx[method]) return;
     const message = ctx.msg.reply_to_message;
     const {message_id: reply_to_message_id} = message;
+    if (actions[type]) void (ctx.replyWithChatAction(actions[type]));
     const context = new Context({...ctx.update, message}, ctx.api, ctx.me);
     const urls = context.entities(["url", "text_link"]).map(getEntityURL);
     return Promise.all(urls.map(url => ctx[method](url, {reply_to_message_id}).catch(handleError(ctx))));
