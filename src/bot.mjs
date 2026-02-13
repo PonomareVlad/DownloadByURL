@@ -1,4 +1,4 @@
-import {Bot, InlineKeyboard, Context} from "grammy/web";
+import {Bot, InlineKeyboard, Context, InputFile} from "grammy/web";
 
 const types = [
     ["Photo", "Sticker"],
@@ -41,7 +41,7 @@ const handleCallback = type => ctx => {
     if (actions[type]) void (ctx.replyWithChatAction(actions[type]));
     const context = new Context({...ctx.update, message}, ctx.api, ctx.me);
     const urls = context.entities(["url", "text_link"]).map(getEntityURL);
-    return Promise.all(urls.map(url => ctx[method](url, {reply_to_message_id}).catch(handleError(ctx))));
+    return Promise.all(urls.map(url => ctx[method](url, {reply_to_message_id}).catch(() => ctx[method](new InputFile({ url }), {reply_to_message_id})).catch(handleError(ctx))));
 }
 
 bot.on("message:text", async ctx => {
