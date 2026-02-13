@@ -11,8 +11,5 @@
   "dependencies": {
     "edge-grammy": "0.0.7",
     "grammy": "^1.17.2"
-  },
-  "engines": {
-    "node": "^18.0.0"
   }
 }
